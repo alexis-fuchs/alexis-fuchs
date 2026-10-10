@@ -26,9 +26,8 @@ draft of AGENTS.md.
 
 **What I changed or rejected, and why:**
 - AGENTS.md: rewrote the "About me", never-paste, and working
-  preferences sections to fit my own background and work
-  [add specifics]
-- [anything else you changed]
+  preferences sections to fit my own background
+  
 
 **What I verified:**
 - No folder named after a course, term, or week
