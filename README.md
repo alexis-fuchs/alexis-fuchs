@@ -1,5 +1,11 @@
 ## Hi there 👋
+I am a fourth-year student at the University of Hawaiʻi at Mānoa’s Shidler College of Business, double majoring in Marketing and International Business and expected to graduate in December 2026. Throughout my time at university, I have developed a strong foundation in marketing principles, business strategy, market research, consumer behavior, and international business.
 
+Through coursework, group projects, and professional experience, I have gained experience analyzing business challenges, developing marketing strategies, conducting research, and presenting recommendations. I enjoy applying concepts learned in the classroom to real-world business situations and collaborating with others to develop practical solutions. My academic experience has also strengthened my communication, critical thinking, and problem-solving skills.
+
+In addition to my studies, I have gained hands-on experience through marketing projects and an internship with Japan Airlines, where I contributed to research, planning, and presentations related to marketing the Honolulu Marathon. These experiences have allowed me to apply my academic knowledge in a professional setting and gain a better understanding of marketing and business operations.
+
+I am interested in continuing to develop my skills and gaining experience in marketing, business development, and brand strategy. I look forward to applying my education and experience to future opportunities while continuing to learn and grow professionally.
 <!--
 **alexis-fuchs/alexis-fuchs** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
