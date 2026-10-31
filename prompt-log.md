@@ -35,6 +35,11 @@ draft of AGENTS.md.
 - README.md bio is my own writing, untouched by AI
 
 ---
+## 2026-10-30 — Stage 2 (model specification)
+- Tool: Claude
+- Asked: draft spec.md and the capability README for Scenario 10 (craft-whiskey); pull spot and 3-month USD/EUR rates for today with sources
+- Kept: tab layout, named ranges, formulas, validation checks, hand-check values
+- Checked: input sources (ECB, Fed H.15, Euribor) and the hand-check numbers
 
 <!-- Template for new entries — copy below this line
 
