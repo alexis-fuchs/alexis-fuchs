@@ -7,8 +7,7 @@ In addition to my studies, I have gained hands-on experience through marketing p
 
 I am interested in continuing to develop my skills and gaining experience in marketing, business development, and brand strategy. I look forward to applying my education and experience to future opportunities while continuing to learn and grow professionally.
 ## Engagements
-_None yet._
-<!--
+   - **FX hedging** (Scenario 10, craft-whiskey): [capabilities/fx-hedging](capabilities/fx-hedging/), Stage 2 spec complete<!--
 **alexis-fuchs/alexis-fuchs** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
 Here are some ideas to get you started:
