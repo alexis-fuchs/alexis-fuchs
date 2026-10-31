@@ -64,3 +64,21 @@ sources; recreate the Stage 0 folder stubs that were missing from the repo.
 
 ---
 
+
+<!-- Template for new entries — copy below this line
+
+## YYYY-MM-DD — Short title
+
+**Tool:**
+**Files changed:**
+
+**What I asked:**
+
+**What I kept:**
+
+**What I changed or rejected, and why:**
+
+**What I verified:**
+
+---
+-->
