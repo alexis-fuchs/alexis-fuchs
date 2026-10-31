@@ -72,3 +72,4 @@ me rather than committing it.
 ## Mistakes to avoid
 Append-only. Add a line each time something goes wrong; never delete.
 - (none yet)
+   - 2026-10-30: Pasted the wrong file into spec.md and a log entry into agents.md. Check each file's first lines before committing.
