@@ -35,26 +35,34 @@ draft of AGENTS.md.
 - README.md bio is my own writing, untouched by AI
 
 ---
-## 2026-10-30 — Stage 2 (model specification)
-- Tool: Claude
-- Asked: draft spec.md and the capability README for Scenario 10 (craft-whiskey); pull spot and 3-month USD/EUR rates for today with sources
-- Kept: tab layout, named ranges, formulas, validation checks, hand-check values
-- Checked: input sources (ECB, Fed H.15, Euribor) and the hand-check numbers
+## 2026-10-30 — FX hedging Stage 2: model specification
 
-<!-- Template for new entries — copy below this line
-
-## YYYY-MM-DD — Short title
-
-**Tool:**
-**Files changed:**
+**Tool:** Claude
+**Files changed:** capabilities/fx-hedging/spec.md, capabilities/fx-hedging/README.md,
+capabilities/README.md, docs/briefs/README.md, docs/decisions/README.md,
+analysis/README.md, data/README.md, models/README.md, CLAUDE.md, AGENTS.md,
+README.md, prompt-log.md
 
 **What I asked:**
+Draft the Stage 2 model specification and capability README for Scenario 10
+(craft-whiskey); find today's EURUSD spot and 3-month USD and EUR rates with
+sources; recreate the Stage 0 folder stubs that were missing from the repo.
 
 **What I kept:**
+- spec.md: tab layout, named ranges, formulas, validation checks, hand-check values
+- Capability README and folder stub READMEs
+- Inputs: ECB spot 1.1172 (30 Oct), Fed H.15 3-month Treasury 4.00% (29 Oct),
+  3-month Euribor 2.618% (28 Oct)
 
 **What I changed or rejected, and why:**
+- Fixed a paste error: spec.md first held the README text, and this entry
+  first landed in agents.md
 
 **What I verified:**
+- Opened the ECB, Fed H.15, and Euribor links in spec.md and matched the three values
+- All folders and files show on github.com
+
+---
 
 ---
 -->
