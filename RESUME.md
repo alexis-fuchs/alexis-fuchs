@@ -2,7 +2,7 @@ Alexis Fuchs
 
 International Business and Marketing
 
-Honolulu, HI · lexi.fuchs@icloud.com · +1 (530) 492-1022
+Honolulu, HI · lexi.fuchs@icloud.com 
 
 Summary
 
