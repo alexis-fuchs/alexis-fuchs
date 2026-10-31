@@ -25,3 +25,6 @@ A U.S. craft-whiskey distiller has invoiced a French luxury-hotel group **EUR 2,
 - Build audit (Stage 3): `analysis/YYYY-MM-DD-craft-whiskey-build-audit-analysis.md`
 - Market-data memo (Stage 4): `data/YYYY-MM-DD-craft-whiskey-market-data-memo.md`
 - Validation + decision memo (Stage 5): `analysis/…-validation-analysis.md`, `docs/decisions/…-hedge-decision-memo.md`
+## Used in
+
+- [Engagement: craft-whiskey (Scenario 10)](../../docs/briefs/2026-10-23-craft-whiskey-hedge-brief.md)
