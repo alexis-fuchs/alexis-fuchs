@@ -45,8 +45,8 @@ BRAND FORMATTING — applied per docs/_branding/design.json (v1.0.0)
 | **Updated by** | Alexis Fuchs |
 | **Date Created** | 2026-10-30 |
 | **Date Updated** | 2026-11-13 |
-| **Version** | 1.2 |
-| **LLM Used** (optional) | Claude — drafted v0.1 and v1.0 from the Stage 2 brief and this template, and the Stage 3 audit fixes (v1.1–v1.2); reviewed by the author (see Appendix A and `prompt-log.md`) |
+| **Version** | 1.3 |
+| **LLM Used** (optional) | Claude — drafted v0.1 and v1.0 from the Stage 2 brief and this template, and the Stage 3 audit fixes (v1.1–v1.3); reviewed by the author (see Appendix A and `prompt-log.md`) |
 | **Role** | Treasury Analyst |
 | **Audience** | CFO |
 | **Companion Workbook** | `capabilities/fx-hedging/model.xlsx` (built in Stage 3) |
@@ -105,7 +105,7 @@ All inputs are workbook-scope **named ranges** on the `Inputs` tab. Market value
 | `Inputs` | The twelve §2.1 named ranges — the only cells an analyst edits |
 | `Forward` | Step 2: `USD_FWD` |
 | `MoneyMarket` | Step 3: borrow, convert, invest; `USD_MM`; parity check vs. forward |
-| `Options` | Step 4: premium costs in USD (`PREM_PUT_USD`, `PREM_CALL_USD`), `FV_PREM_PUT`, `FV_PREM_CALL`, the put and call payoff table across `S_T_grid`, `USD_FLOOR_PUT`, put–call parity |
+| `Options` | Step 4: premium costs in USD (`PREM_PUT_USD`, `PREM_CALL_USD`), `FV_PREM_PUT`, `FV_PREM_CALL`, the put and call payoff table across `S_T_grid`, `USD_FLOOR_PUT`, put–call parity, the V3 put kink test |
 | `Sensitivity` | Strategy summary, the 11-row grid (`tbl_Sensitivity`), hedge-profit columns, winner labels, and `chart_Sensitivity` |
 | `Checks` | The §5.2 validation rules with PASS / FLAG results |
 | `Notes` | Assumptions (§3), source URLs and access timestamps, and the change log |
@@ -221,8 +221,8 @@ These become the Stage 3 audit checklist. Results show on `Checks` as **PASS** o
 |----|------|--------------|---------------------|
 | V1 | Forward ≈ money-market parity: `ABS(PARITY_GAP) ≤ 0.05%` | 0.05% | **FLAG** (+3.94%) — placeholder `F0_in`; resolved at Stage 4 |
 | V2 | Money market equals CIP forward: `USD_MM / FC_AMT = F_CIP` | difference < 1E-9 | PASS |
-| V3 | Put kink: `USD_PUT(K_PUT) = K_PUT × FC_AMT + FV_PREM_PUT` | $2,314,937.87 | PASS |
-| V4 | Put floor holds: `MIN(USD_PUT) = USD_FLOOR_PUT` | $2,314,937.87 | PASS |
+| V3 | Put kink, tested on its own block on `Options` so it works for any strike, on or off the grid: evaluate the put at `S_T = K_PUT × (1 − STEP_FRAC)`, `K_PUT`, and `K_PUT × (1 + STEP_FRAC)`. Expected: `K_PUT × FC_AMT + FV_PREM_PUT` at the first two points, `S_T × FC_AMT + FV_PREM_PUT` at the third; largest difference ≤ $0.01 | $2,314,937.87 · $2,314,937.87 · $2,338,399.07 | PASS |
+| V4 | Put floor holds: `USD_FLOOR_PUT = K_PUT × FC_AMT + FV_PREM_PUT` within $0.01 (valid while the lowest grid `S_T` ≤ `K_PUT`). Do not compare `USD_FLOOR_PUT` with `MIN(USD_PUT)`: it is defined as that MIN, so the test could never fail | $2,314,937.87 | PASS |
 | V5 | Option proceeds vary continuously: adjacent-row change ≤ `STEP_FRAC × S0_in × FC_AMT` | $23,461.20 | PASS |
 | V6 | Forward and money market constant across rows: `MAX − MIN = 0` | 0 | PASS |
 | V7 | Put–call parity vs. CIP: `ABS(F_PCP / F_CIP − 1) ≤ 0.5%` | 0.5% | PASS (+0.12%) |
@@ -322,3 +322,4 @@ Written before the build, as a known-risks register.
 | 1.0 | 2026-10-30 | Alexis Fuchs (Claude-drafted, author-reviewed) | Review against the Stage 2 brief found five gaps; rebuilt on `template-spec.md`: (1) premium names `P_PUT`/`P_CALL` → `PREM_PUT`/`PREM_CALL`; (2) tabs changed to Cover, Legend, Inputs, Forward, MoneyMarket, Options, Sensitivity, Checks, Notes; (3) sensitivity ±10% in 2.5% steps → ±5% in 1% steps (`STEP_FRAC`); (4) color code → yellow / blue / green / gray; (5) derived names aligned to the template (`GROW_USD` → `DF_USD`, `USD_MMH` → `USD_MM`, put premium as signed `FV_PREM_PUT`) |
 | 1.1 | 2026-11-13 | Alexis Fuchs (Claude-drafted, Stage 3 audit) | Audit finding 1: build contract item 5 requires both options' premium cost in USD and proceeds as a function of `S_T`, but §4 Step 4 limited the call to the parity check, so the v1.0 build had no call payoff. Added `PREM_PUT_USD`, `PREM_CALL_USD`, `USD_CALL` and the `Options` payoff table |
 | 1.2 | 2026-11-13 | Alexis Fuchs (Claude-drafted, Stage 3 audit) | Audit finding 2: V10 showed `#NAME?` (the build stored `ISFORMULA` without the `_xlfn.` prefix) and V9 still read 0 errors, because the build left `Checks` out of its scan. V9 now covers `Checks` except its own row; V10 carries the `_xlfn` build note |
+| 1.3 | 2026-11-13 | Alexis Fuchs (Claude-drafted, Stage 3 audit) | Audit finding 3: V3 looked the strike up on the grid and FLAGged whenever `K_PUT` sat between grid points (as it will after the Stage 4 strike reset); V4 compared `USD_FLOOR_PUT` with itself and could never fail. V3 now uses an off-grid kink test; V4 compares with the true floor |
