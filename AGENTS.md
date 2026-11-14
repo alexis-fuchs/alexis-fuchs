@@ -38,8 +38,10 @@ This file is canonical; CLAUDE.md only points here.
 May: explain concepts, critique my work, debug code and formulas,
 quiz me, and draft mechanical files (folder stubs, templates,
 boilerplate, chart code).
-May not: draft my bio, briefs, analyses, memos, or reflections.
-The first draft of those is always mine. You may review them.
+FX hedging project: my instructor allows AI for every deliverable, so
+AI may draft its briefs, specs, analyses, and memos. Each draft is
+disclosed in llm_used and prompt-log.md, and I review it before committing.
+May not: draft my bio or reflections. The first draft of those is always mine.
 
 ## Documentation
 When a change affects a document (README index, spec.md, data
