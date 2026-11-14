@@ -129,6 +129,7 @@ still held spec v1.0 and the first build.
 - Checks shows 10 PASS / 2 FLAG, "All results as expected?" = Yes, and no #NAME?
 - Changed Inputs!C7 from 1.1172 to 1.09: the Sensitivity grid's first row showed S_T
   1.035500 and No hedge $2,174,550.00; closed without saving
+- All files show on github.com at the paths the Stage 3 brief gives
 
 ---
 
