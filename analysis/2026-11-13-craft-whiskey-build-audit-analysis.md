@@ -99,4 +99,4 @@ Under the stress test, V7 and V12 also FLAG when `S0_in` moves away from the pla
 
 ## Still to verify
 
-- [ ] Open `model.xlsx` in Microsoft Excel. The build was recalculated in LibreOffice, so confirm in Excel that `Checks` shows 10 PASS / 2 FLAG with no `#NAME?`, and that changing `S0_in` moves the `Sensitivity` grid and chart.
+- [x] Open `model.xlsx` in Microsoft Excel. The build was recalculated in LibreOffice, so confirm in Excel that `Checks` shows 10 PASS / 2 FLAG with no `#NAME?`, and that changing `S0_in` moves the `Sensitivity` grid and chart.
