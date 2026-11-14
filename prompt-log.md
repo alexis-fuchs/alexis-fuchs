@@ -63,6 +63,40 @@ sources; recreate the Stage 0 folder stubs that were missing from the repo.
 - All folders and files show on github.com
 
 ---
+## 2026-11-13 — FX hedging Stage 3: AI-assisted build and audit
+
+**Tool:** Claude (claude.ai, with a Python and LibreOffice workspace)
+**Files changed:** capabilities/fx-hedging/model.xlsx, capabilities/fx-hedging/spec.md,
+capabilities/fx-hedging/README.md, analysis/2026-11-13-craft-whiskey-build-audit-analysis.md,
+README.md, prompt-log.md
+
+**What I asked:**
+Walk me through Stage 3. Claude built model.xlsx from the committed spec (commit d5f6046)
+as written, with the course starter prompt as the instruction: every build-contract item
+is binding (ten named ranges, formulas only, cover, legend, all three hedge families,
+±5% sensitivity table with chart, validation checks in the workbook). It then audited
+the build, fixed each defect in spec.md, regenerated the workbook, and drafted the audit note.
+
+**What I kept:**
+- model.xlsx, regenerated after each spec fix (spec v1.0 to v1.5): 379 formulas,
+  37 named ranges, Checks at 10 PASS / 2 FLAG
+- spec.md v1.1–v1.5: call payoff and premium costs (contract item 5), V9/V10 error
+  checks, V3/V4 put checks, V5 tolerance, tbl_Summary column definitions
+- Audit note with 5 defects found and fixed and 5 checks confirmed
+
+**What I changed or rejected, and why:**
+- Left V1 and V8 as FLAG instead of loosening them: they flag the placeholder forward
+  and should clear at Stage 4
+- Fixed every defect in spec.md and regenerated the workbook; nothing patched by hand,
+  and nothing re-explained in chat instead of the spec
+
+**What I verified:**
+- Opened model.xlsx in Excel: Checks shows 10 PASS / 2 FLAG and no #NAME?
+- Formulas → Name Manager lists the ten contract names, each on its Inputs row
+- Changed S0_in and saw the Sensitivity grid and chart move; closed without saving
+- All files show on github.com at the paths the Stage 3 brief gives
+
+---
 
 
 <!-- Template for new entries — copy below this line
