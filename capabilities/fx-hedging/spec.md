@@ -44,9 +44,9 @@ BRAND FORMATTING — applied per docs/_branding/design.json (v1.0.0)
 | **Created by** | Alexis Fuchs |
 | **Updated by** | Alexis Fuchs |
 | **Date Created** | 2026-10-30 |
-| **Date Updated** | 2026-10-30 |
-| **Version** | 1.0 |
-| **LLM Used** (optional) | Claude — drafted v0.1 and v1.0 from the Stage 2 brief and this template; reviewed and edited by the author (see Appendix A and `prompt-log.md`) |
+| **Date Updated** | 2026-11-13 |
+| **Version** | 1.1 |
+| **LLM Used** (optional) | Claude — drafted v0.1 and v1.0 from the Stage 2 brief and this template, and the Stage 3 audit fixes (v1.1–v1.1); reviewed by the author (see Appendix A and `prompt-log.md`) |
 | **Role** | Treasury Analyst |
 | **Audience** | CFO |
 | **Companion Workbook** | `capabilities/fx-hedging/model.xlsx` (built in Stage 3) |
@@ -77,7 +77,7 @@ All inputs are workbook-scope **named ranges** on the `Inputs` tab. Market value
 | `K_PUT` | Put strike (at the money) | USD per EUR | 1.1172 | Scenario 10: strike at spot (= `S0_in`) | Re-set at or near the Stage 4 spot |
 | `K_CALL` | Call strike (at the money) | USD per EUR | 1.1172 | Scenario 10: strike at spot (= `S0_in`) | Re-set at or near the Stage 4 spot |
 | `PREM_PUT` | Put premium per 1 EUR | USD | 0.0147 | Scenario 10 (given) | **Kept** — retail quotes unreliable |
-| `PREM_CALL` | Call premium per 1 EUR | USD | 0.0199 | Scenario 10 (given) | **Kept** — used only for the parity check |
+| `PREM_CALL` | Call premium per 1 EUR | USD | 0.0199 | Scenario 10 (given) | **Kept** — used for the call payoff and the parity check |
 | `STEP_FRAC` | Sensitivity grid step | % of `S0_in` | 1.00% | Stage 2 brief: ±5% in 1% steps | Unchanged |
 
 ### 2.2 Derived / Intermediate Values
@@ -88,10 +88,13 @@ All inputs are workbook-scope **named ranges** on the `Inputs` tab. Market value
 | `DF_FC` | EUR accumulation factor to settlement | `1 + R_FC × T_DAYS / BASIS` |
 | `FV_PREM_PUT` | Future value of put premium at settlement (negative) | `−PREM_PUT × FC_AMT × DF_USD` |
 | `FV_PREM_CALL` | Future value of call premium at settlement (negative) | `−PREM_CALL × FC_AMT × DF_USD` |
+| `PREM_PUT_USD` | Put premium cost paid today (positive, USD) | `PREM_PUT × FC_AMT` |
+| `PREM_CALL_USD` | Call premium cost paid today (positive, USD) | `PREM_CALL × FC_AMT` |
 | `F_CIP` | Forward implied by covered interest parity | `S0_in × DF_USD / DF_FC` |
 | `F_PCP` | Forward implied by put–call parity (valid because `K_PUT = K_CALL`) | `K_CALL + (PREM_CALL − PREM_PUT) × DF_USD` |
 | `S_T_grid` | Sensitivity spot grid at settlement | `S0_in × (1 + k × STEP_FRAC)`, `k = −5 … +5` |
 | `USD_NO_HEDGE` | USD proceeds under no hedge | `S_T × FC_AMT` |
+| `USD_CALL` | Call net value at settlement, one value per `S_T` | `MAX(0, S_T − K_CALL) × FC_AMT + FV_PREM_CALL` |
 
 ### 2.3 Tab Architecture & Color Legend
 
@@ -102,7 +105,7 @@ All inputs are workbook-scope **named ranges** on the `Inputs` tab. Market value
 | `Inputs` | The twelve §2.1 named ranges — the only cells an analyst edits |
 | `Forward` | Step 2: `USD_FWD` |
 | `MoneyMarket` | Step 3: borrow, convert, invest; `USD_MM`; parity check vs. forward |
-| `Options` | Step 4: premiums, `FV_PREM_PUT`, put payoff, `USD_FLOOR_PUT`, put–call parity |
+| `Options` | Step 4: premium costs in USD (`PREM_PUT_USD`, `PREM_CALL_USD`), `FV_PREM_PUT`, `FV_PREM_CALL`, the put and call payoff table across `S_T_grid`, `USD_FLOOR_PUT`, put–call parity |
 | `Sensitivity` | Strategy summary, the 11-row grid (`tbl_Sensitivity`), hedge-profit columns, winner labels, and `chart_Sensitivity` |
 | `Checks` | The §5.2 validation rules with PASS / FLAG results |
 | `Notes` | Assumptions (§3), source URLs and access timestamps, and the change log |
@@ -149,11 +152,12 @@ Named-range notation only — never cell addresses. Formulas are for a **receiva
 
 ### Step 4 — Option hedge (floor with upside)
 
-- Pay `PREM_PUT × FC_AMT` USD today for a put on EUR struck at `K_PUT`.
+- Pay `PREM_PUT_USD = PREM_PUT × FC_AMT` USD today for a put on EUR struck at `K_PUT`.
 - For each `S_T`: `USD_PUT(S_T) = MAX(S_T, K_PUT) × FC_AMT + FV_PREM_PUT`.
 - **Put floor:** when `S_T ≤ K_PUT`, the put pays `(K_PUT − S_T) × FC_AMT`, so proceeds are fixed at `K_PUT × FC_AMT + FV_PREM_PUT`.
 - **Upside participation:** when `S_T > K_PUT`, the put expires unused and proceeds rise with `S_T`, less the premium: `S_T × FC_AMT + FV_PREM_PUT`.
-- **Call (parity check only):** a long call does not hedge a receivable. Its payoff, `MAX(0, S_T − K_CALL) × FC_AMT`, is used only through `F_PCP`.
+- **Call (shown in full; not a hedge for this receivable):** pay `PREM_CALL_USD = PREM_CALL × FC_AMT` USD today. For each `S_T`: payoff `MAX(0, S_T − K_CALL) × FC_AMT` and net value at settlement `USD_CALL(S_T) = MAX(0, S_T − K_CALL) × FC_AMT + FV_PREM_CALL`. A long call gains when the euro rises, the same direction as the receivable, so it adds exposure instead of removing it; it is the hedge for a EUR payable (Step 7). It also feeds `F_PCP`.
+- **Payoff table (`Options` tab):** one row per `S_T` in `S_T_grid`, with columns Shock, `S_T`, put exercised?, put payoff, EUR sold at `S_T`, `FV_PREM_PUT`, `USD_PUT(S_T)`, call exercised?, call payoff, `FV_PREM_CALL`, `USD_CALL(S_T)`. Build contract item 5 requires both options' premium cost in USD and proceeds as a function of `S_T`.
 
 ### Step 5 — Sensitivity table (`tbl_Sensitivity`, one row per `S_T` in `S_T_grid`)
 
@@ -176,7 +180,7 @@ Named-range notation only — never cell addresses. Formulas are for a **receiva
 
 ### Step 7 — Payable variant
 
-Not applicable: the exposure is a receivable. `K_CALL` and `PREM_CALL` are kept only for the put–call parity check.
+Not applicable: the exposure is a receivable. `K_CALL` and `PREM_CALL` drive the call columns on `Options` (shown for completeness) and the put–call parity check.
 
 ---
 
@@ -188,6 +192,7 @@ Every output is a **gray** named cell or named table.
 |-------------|-------------|-----|---------|
 | `USD_FWD`, `USD_MM` | Locked proceeds, forward and money market | `Forward`, `MoneyMarket` | Certainty benchmarks |
 | `USD_FLOOR_PUT` | Worst-case put proceeds on the grid | `Options` | Downside protection |
+| `PREM_PUT_USD`, `PREM_CALL_USD` | Option premium costs paid today | `Options` | Cost of optionality |
 | `USD_BASE_NOHEDGE`, `USD_BASE_FWD`, `USD_BASE_MM`, `USD_BASE_PUT` | Proceeds at `S_T = S0_in` | `Sensitivity` | Base case (§5.1) |
 | `PARITY_GAP`, `F_CIP`, `F_PCP` | Forward vs. parity diagnostics | `MoneyMarket`, `Options` | Tests the quoted forward |
 | `tbl_Summary` | The four strategies: locked/floor proceeds, up-front cost, upside kept | `Sensitivity` (above grid) | Executive at-a-glance |
@@ -206,7 +211,7 @@ At `S_T = S0_in = 1.1172` with the §2.1 placeholders. Regression checkpoint for
 | Money market | 2,354,262.03 | n/a | +8,142.03 |
 | Option (put) | 2,314,937.87 | n/a | −31,182.13 |
 
-Intermediate check values: `DF_USD` 1.010111 · `DF_FC` 1.006618 · `MM_FC_BORROW` €2,086,194.15 · `MM_USD_T0` $2,330,696.10 · `FV_PREM_PUT` −$31,182.13 · `F_CIP` 1.121077 · `F_PCP` 1.122453 · `PARITY_GAP` +3.94% ($92,867.97).
+Intermediate check values: `DF_USD` 1.010111 · `DF_FC` 1.006618 · `MM_FC_BORROW` €2,086,194.15 · `MM_USD_T0` $2,330,696.10 · `FV_PREM_PUT` −$31,182.13 · `F_CIP` 1.121077 · `F_PCP` 1.122453 · `PARITY_GAP` +3.94% ($92,867.97) · `PREM_PUT_USD` $30,870.00 · `PREM_CALL_USD` $41,790.00 · `FV_PREM_CALL` −$42,212.54 · `USD_CALL` at +5% +$75,093.46.
 
 ### 5.2 Validation Rules (Check Figures)
 
@@ -315,3 +320,4 @@ Written before the build, as a known-risks register.
 |---------|------|--------|--------|
 | 0.1 | 2026-10-30 | Alexis Fuchs (Claude-drafted) | Initial draft, written before the course template was found |
 | 1.0 | 2026-10-30 | Alexis Fuchs (Claude-drafted, author-reviewed) | Review against the Stage 2 brief found five gaps; rebuilt on `template-spec.md`: (1) premium names `P_PUT`/`P_CALL` → `PREM_PUT`/`PREM_CALL`; (2) tabs changed to Cover, Legend, Inputs, Forward, MoneyMarket, Options, Sensitivity, Checks, Notes; (3) sensitivity ±10% in 2.5% steps → ±5% in 1% steps (`STEP_FRAC`); (4) color code → yellow / blue / green / gray; (5) derived names aligned to the template (`GROW_USD` → `DF_USD`, `USD_MMH` → `USD_MM`, put premium as signed `FV_PREM_PUT`) |
+| 1.1 | 2026-11-13 | Alexis Fuchs (Claude-drafted, Stage 3 audit) | Audit finding 1: build contract item 5 requires both options' premium cost in USD and proceeds as a function of `S_T`, but §4 Step 4 limited the call to the parity check, so the v1.0 build had no call payoff. Added `PREM_PUT_USD`, `PREM_CALL_USD`, `USD_CALL` and the `Options` payoff table |
