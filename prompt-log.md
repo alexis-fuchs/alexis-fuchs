@@ -97,6 +97,40 @@ the build, fixed each defect in spec.md, regenerated the workbook, and drafted t
 - All files show on github.com at the paths the Stage 3 brief gives
 
 ---
+## 2026-11-13 — FX hedging Stage 3: upload-path correction
+
+**Tool:** Claude Code
+**Files changed:** capabilities/fx-hedging/spec.md, capabilities/fx-hedging/model.xlsx,
+analysis/2026-11-13-craft-whiskey-build-audit-analysis.md, AGENTS.md, prompt-log.md;
+removed the five misplaced step folders and the root copy of the audit note
+
+**What I asked:**
+Move Stage 3 fixes 1–5 and the audit note to the paths the Stage 3 brief gives; my web
+uploads had put them in step folders and at the repo root, so capabilities/fx-hedging/
+still held spec v1.0 and the first build.
+
+**What I kept:**
+- Fixes 1–5 moved into capabilities/fx-hedging/ in order, one commit each, contents
+  unchanged
+- Audit note moved into analysis/; its "Open model.xlsx" check ticked after the Excel
+  checks below
+
+**What I changed or rejected, and why:**
+- Correction to the previous entry: that session also changed AGENTS.md (AI-drafting
+  policy for the FX hedging project), which its Files changed line left out
+- Correction to the previous entry: its line "All files show on github.com at the paths
+  the Stage 3 brief gives" was wrong; the files were in step folders and at the repo root
+
+**What I verified:**
+- Each moved file's SHA-256 matches its step-folder original
+- spec.md shows Version 1.5, and the workbook's Cover says built from spec.md v1.5
+- Opened model.xlsx in Excel: Formulas → Name Manager shows FC_AMT, T_DAYS, S0_in, F0_in,
+  R_USD, R_FC, K_PUT, K_CALL, PREM_PUT and PREM_CALL, each on Inputs!$C$5:$C$15
+- Checks shows 10 PASS / 2 FLAG, "All results as expected?" = Yes, and no #NAME?
+- Changed Inputs!C7 from 1.1172 to 1.09: the Sensitivity grid's first row showed S_T
+  1.035500 and No hedge $2,174,550.00; closed without saving
+
+---
 
 
 <!-- Template for new entries — copy below this line
