@@ -45,8 +45,8 @@ BRAND FORMATTING — applied per docs/_branding/design.json (v1.0.0)
 | **Updated by** | Alexis Fuchs |
 | **Date Created** | 2026-10-30 |
 | **Date Updated** | 2026-11-13 |
-| **Version** | 1.1 |
-| **LLM Used** (optional) | Claude — drafted v0.1 and v1.0 from the Stage 2 brief and this template, and the Stage 3 audit fixes (v1.1–v1.1); reviewed by the author (see Appendix A and `prompt-log.md`) |
+| **Version** | 1.2 |
+| **LLM Used** (optional) | Claude — drafted v0.1 and v1.0 from the Stage 2 brief and this template, and the Stage 3 audit fixes (v1.1–v1.2); reviewed by the author (see Appendix A and `prompt-log.md`) |
 | **Role** | Treasury Analyst |
 | **Audience** | CFO |
 | **Companion Workbook** | `capabilities/fx-hedging/model.xlsx` (built in Stage 3) |
@@ -227,8 +227,8 @@ These become the Stage 3 audit checklist. Results show on `Checks` as **PASS** o
 | V6 | Forward and money market constant across rows: `MAX − MIN = 0` | 0 | PASS |
 | V7 | Put–call parity vs. CIP: `ABS(F_PCP / F_CIP − 1) ≤ 0.5%` | 0.5% | PASS (+0.12%) |
 | V8 | Put–call parity vs. quoted forward: `ABS(F_PCP / F0_in − 1) ≤ 0.5%` | 0.5% | **FLAG** (−3.68%) — same placeholder |
-| V9 | No error cells: `SUMPRODUCT(--ISERROR(range)) = 0` on every tab | 0 | PASS |
-| V10 | Every green and gray cell is a formula: `ISFORMULA` = TRUE | all TRUE | PASS |
+| V9 | No error cells: `SUMPRODUCT(--ISERROR(range)) = 0` summed over every tab, **including `Checks`**: every `Checks` row except V9's own row and the PASS/FLAG summary that depends on it (those would be circular references) | 0 | PASS |
+| V10 | Every green and gray cell outside `Checks` is a formula: count of non-formula cells, `SUMPRODUCT(--NOT(ISFORMULA(block)))` summed over the blocks, = 0. Build note: `ISFORMULA` is an Excel 2013+ function, so a generated file must store it as `_xlfn.ISFORMULA`, or Excel and LibreOffice show `#NAME?` | 0 non-formula cells | PASS |
 | V11 | Fixed terms unchanged: `FC_AMT = 2,100,000`, `T_DAYS = 91` | exact | PASS |
 | V12 | Base case reproduces §5.1 | ±$0.01 | PASS |
 
@@ -321,3 +321,4 @@ Written before the build, as a known-risks register.
 | 0.1 | 2026-10-30 | Alexis Fuchs (Claude-drafted) | Initial draft, written before the course template was found |
 | 1.0 | 2026-10-30 | Alexis Fuchs (Claude-drafted, author-reviewed) | Review against the Stage 2 brief found five gaps; rebuilt on `template-spec.md`: (1) premium names `P_PUT`/`P_CALL` → `PREM_PUT`/`PREM_CALL`; (2) tabs changed to Cover, Legend, Inputs, Forward, MoneyMarket, Options, Sensitivity, Checks, Notes; (3) sensitivity ±10% in 2.5% steps → ±5% in 1% steps (`STEP_FRAC`); (4) color code → yellow / blue / green / gray; (5) derived names aligned to the template (`GROW_USD` → `DF_USD`, `USD_MMH` → `USD_MM`, put premium as signed `FV_PREM_PUT`) |
 | 1.1 | 2026-11-13 | Alexis Fuchs (Claude-drafted, Stage 3 audit) | Audit finding 1: build contract item 5 requires both options' premium cost in USD and proceeds as a function of `S_T`, but §4 Step 4 limited the call to the parity check, so the v1.0 build had no call payoff. Added `PREM_PUT_USD`, `PREM_CALL_USD`, `USD_CALL` and the `Options` payoff table |
+| 1.2 | 2026-11-13 | Alexis Fuchs (Claude-drafted, Stage 3 audit) | Audit finding 2: V10 showed `#NAME?` (the build stored `ISFORMULA` without the `_xlfn.` prefix) and V9 still read 0 errors, because the build left `Checks` out of its scan. V9 now covers `Checks` except its own row; V10 carries the `_xlfn` build note |
