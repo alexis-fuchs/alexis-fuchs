@@ -75,3 +75,4 @@ me rather than committing it.
 Append-only. Add a line each time something goes wrong; never delete.
 - (none yet)
    - 2026-10-30: Pasted the wrong file into spec.md and a log entry into agents.md. Check each file's first lines before committing.
+   - 2026-11-13: Dragged the numbered step folders into GitHub's uploader, so Stage 3 fixes 1–5 and the audit note landed at the wrong paths. Drag the folder inside, and check the path list before committing.
