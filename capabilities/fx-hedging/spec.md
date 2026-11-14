@@ -45,8 +45,8 @@ BRAND FORMATTING — applied per docs/_branding/design.json (v1.0.0)
 | **Updated by** | Alexis Fuchs |
 | **Date Created** | 2026-10-30 |
 | **Date Updated** | 2026-11-13 |
-| **Version** | 1.4 |
-| **LLM Used** (optional) | Claude — drafted v0.1 and v1.0 from the Stage 2 brief and this template, and the Stage 3 audit fixes (v1.1–v1.4); reviewed by the author (see Appendix A and `prompt-log.md`) |
+| **Version** | 1.5 |
+| **LLM Used** (optional) | Claude — drafted v0.1 and v1.0 from the Stage 2 brief and this template, and the Stage 3 audit fixes (v1.1–v1.5); reviewed by the author (see Appendix A and `prompt-log.md`) |
 | **Role** | Treasury Analyst |
 | **Audience** | CFO |
 | **Companion Workbook** | `capabilities/fx-hedging/model.xlsx` (built in Stage 3) |
@@ -195,7 +195,7 @@ Every output is a **gray** named cell or named table.
 | `PREM_PUT_USD`, `PREM_CALL_USD` | Option premium costs paid today | `Options` | Cost of optionality |
 | `USD_BASE_NOHEDGE`, `USD_BASE_FWD`, `USD_BASE_MM`, `USD_BASE_PUT` | Proceeds at `S_T = S0_in` | `Sensitivity` | Base case (§5.1) |
 | `PARITY_GAP`, `F_CIP`, `F_PCP` | Forward vs. parity diagnostics | `MoneyMarket`, `Options` | Tests the quoted forward |
-| `tbl_Summary` | The four strategies: locked/floor proceeds, up-front cost, upside kept | `Sensitivity` (above grid) | Executive at-a-glance |
+| `tbl_Summary` | One row per strategy (no hedge, forward, money market, option (put)). Columns, each a formula on that strategy's grid column: worst case on grid (`MIN`); best case on grid (`MAX`); proceeds at `S_T = S0_in` (`USD_BASE_k`); up-front USD cost (`PREM_PUT_USD` for the put; the text "None" for the other three, whose cost is built into their locked rate); upside kept = best case − proceeds at `S0_in` | `Sensitivity` (above grid) | Executive at-a-glance |
 | `tbl_Sensitivity` | §4 Step 5 grid, 11 rows | `Sensitivity` | Core evidence |
 | `chart_Sensitivity` | §7 line chart | `Sensitivity` | Visual comparison |
 | `tbl_Checks` | §5.2 rules with PASS / FLAG | `Checks` | Audit trail |
@@ -268,7 +268,7 @@ Written before the build, as a known-risks register.
 
 - **Grid:** `S_T_grid` spans `S0_in × (1 ± 5%)` in 1% steps (`STEP_FRAC`) — 11 rows, including the baseline.
 - **Strategies plotted:** no hedge, forward, money market, option (put).
-- **Primary chart (`chart_Sensitivity`):** line chart, `S_T` on the x-axis and USD proceeds on the y-axis, one series per strategy, plus a horizontal reference line at the budget (`FC_AMT × S0_in` = $2,346,120). Forward and money market are flat; no hedge is a straight upward line; the put is flat below `K_PUT` and rises above it.
+- **Primary chart (`chart_Sensitivity`):** line chart, `S_T` on the x-axis and USD proceeds on the y-axis, one series per strategy, plus a horizontal reference line at the budget (`FC_AMT × S0_in` = $2,346,120), drawn dashed gray from a helper column beside the grid so it is not mistaken for the money-market line $8,142 above it. Forward and money market are flat; no hedge is a straight upward line; the put is flat below `K_PUT` and rises above it.
 - **Secondary table:** the three hedge-profit columns.
 - **What the CFO should see:** how much each hedge protects if the euro falls, what each gives up if it rises, where the lines cross, and the cost of certainty versus the premium for optionality.
 
@@ -324,3 +324,4 @@ Written before the build, as a known-risks register.
 | 1.2 | 2026-11-13 | Alexis Fuchs (Claude-drafted, Stage 3 audit) | Audit finding 2: V10 showed `#NAME?` (the build stored `ISFORMULA` without the `_xlfn.` prefix) and V9 still read 0 errors, because the build left `Checks` out of its scan. V9 now covers `Checks` except its own row; V10 carries the `_xlfn` build note |
 | 1.3 | 2026-11-13 | Alexis Fuchs (Claude-drafted, Stage 3 audit) | Audit finding 3: V3 looked the strike up on the grid and FLAGged whenever `K_PUT` sat between grid points (as it will after the Stage 4 strike reset); V4 compared `USD_FLOOR_PUT` with itself and could never fail. V3 now uses an off-grid kink test; V4 compares with the true floor |
 | 1.4 | 2026-11-13 | Alexis Fuchs (Claude-drafted, Stage 3 audit) | Audit finding 4: V5 FLAGged on floating-point noise ($23,461.2000000002 against a $23,461.20 bound). Added a $0.01 allowance |
+| 1.5 | 2026-11-13 | Alexis Fuchs (Claude-drafted, Stage 3 audit) | Audit finding 5: `tbl_Summary` columns were named but not defined, so the build improvised them ("locked/floor", "upside kept at +5%"). Defined each column as a formula; chart budget line drawn dashed |
