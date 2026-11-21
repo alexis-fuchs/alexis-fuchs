@@ -1,2 +1,2 @@
-   # Figures
-   Charts referenced from the analysis documents.
+# Figures
+Charts referenced from the analysis documents.

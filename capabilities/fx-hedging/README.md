@@ -11,7 +11,7 @@ A U.S. craft-whiskey distiller has invoiced a French luxury-hotel group **EUR 2,
 | File | Stage | What it is | Status |
 |---|---|---|---|
 | `spec.md` | 2 | Model specification: tabs, named ranges, formulas, validation checks, hand-check values | Committed 2026-10-30 (v1.0); revised in the Stage 3 audit (v1.1–v1.5) and at Stage 4 (v1.6); see its change log |
-| `model.xlsx` | 3–4 | Workbook built from `spec.md`, then populated with live market data | Built 2026-11-13 (Stage 3); populated with live market data of 2026-11-20 (Stage 4). The spec version it was built from is on its `Cover` tab |
+| `model.xlsx` | 3–4 | Workbook built from `spec.md`, then populated with live market data | Built 2026-11-13 (Stage 3); populated with live market data of 2026-11-20 (Stage 4); validated independently 2026-11-20 (Stage 5). The spec version it was built from is on its `Cover` tab |
 
 ## How to use the model
 
@@ -24,7 +24,8 @@ A U.S. craft-whiskey distiller has invoiced a French luxury-hotel group **EUR 2,
 - Engagement brief: `docs/briefs/2026-10-23-craft-whiskey-hedge-brief.md`
 - Build audit (Stage 3): [`analysis/2026-11-13-craft-whiskey-build-audit-analysis.md`](../../analysis/2026-11-13-craft-whiskey-build-audit-analysis.md)
 - Market-data memo (Stage 4): [`data/2026-11-20-craft-whiskey-market-data-memo.md`](../../data/2026-11-20-craft-whiskey-market-data-memo.md)
-- Validation + decision memo (Stage 5): `analysis/…-validation-analysis.md`, `docs/decisions/…-hedge-decision-memo.md`
+- Validation (Stage 5): [`analysis/2026-11-20-craft-whiskey-validation-analysis.md`](../../analysis/2026-11-20-craft-whiskey-validation-analysis.md)
+- Decision memo (Stage 5): [`docs/decisions/2026-11-20-craft-whiskey-hedge-decision-memo.md`](../../docs/decisions/2026-11-20-craft-whiskey-hedge-decision-memo.md)
 ## Used in
 
-- [Engagement: craft-whiskey (Scenario 10)](../../docs/briefs/2026-10-23-craft-whiskey-hedge-brief.md)
+- [Engagement: craft-whiskey (Scenario 10)](../../docs/briefs/2026-10-23-craft-whiskey-hedge-brief.md) → [decision](../../docs/decisions/2026-11-20-craft-whiskey-hedge-decision-memo.md)
