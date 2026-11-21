@@ -44,12 +44,12 @@ BRAND FORMATTING — applied per docs/_branding/design.json (v1.0.0)
 | **Created by** | Alexis Fuchs |
 | **Updated by** | Alexis Fuchs |
 | **Date Created** | 2026-10-30 |
-| **Date Updated** | 2026-11-13 |
-| **Version** | 1.5 |
-| **LLM Used** (optional) | Claude — drafted v0.1 and v1.0 from the Stage 2 brief and this template, and the Stage 3 audit fixes (v1.1–v1.5); reviewed by the author (see Appendix A and `prompt-log.md`) |
+| **Date Updated** | 2026-11-20 |
+| **Version** | 1.6 |
+| **LLM Used** (optional) | Claude — drafted v0.1 and v1.0 from the Stage 2 brief and this template, the Stage 3 audit fixes (v1.1–v1.5) and the Stage 4 changes (v1.6); reviewed by the author (see Appendix A and `prompt-log.md`) |
 | **Role** | Treasury Analyst |
 | **Audience** | CFO |
-| **Companion Workbook** | `capabilities/fx-hedging/model.xlsx` (built in Stage 3) |
+| **Companion Workbook** | `capabilities/fx-hedging/model.xlsx` (built in Stage 3; live data since Stage 4, see `data/2026-11-20-craft-whiskey-market-data-memo.md`) |
 
 ---
 
@@ -61,7 +61,7 @@ The firm, a U.S. craft-whiskey distiller with USD as its functional currency, ho
 
 ## 2. Inputs (Known Variables)
 
-All inputs are workbook-scope **named ranges** on the `Inputs` tab. Market values below are **placeholders — "indicative — replaced with live market data at Stage 4."** Sources and access timestamps are recorded on the `Notes` tab.
+All inputs are workbook-scope **named ranges** on the `Inputs` tab. The values below are the Stage 2 **placeholders**, kept for reference. The live values in force since Stage 4 (2026-11-20), with source, timestamp and rate rationale for each, are in `data/2026-11-20-craft-whiskey-market-data-memo.md` and on the `Inputs` tab; source URLs and access times are on the `Notes` tab.
 
 ### 2.1 Core Inputs
 
@@ -70,7 +70,7 @@ All inputs are workbook-scope **named ranges** on the `Inputs` tab. Market value
 | `FC_AMT` | EUR receivable notional | EUR | 2,100,000 | Scenario 10 (fixed) | **Fixed — never changes** |
 | `T_DAYS` | Days to settlement | Days | 91 | Scenario 10 (fixed) | **Fixed — never changes** |
 | `S0_in` | Spot rate at inception | USD per EUR | 1.1172 | ECB euro reference rate (2026-10-30) | Live EURUSD spot, sourced and timestamped |
-| `F0_in` | 91-day forward rate | USD per EUR | 1.1653 | Scenario 10 indicative forward (set 2026-10-18 for teaching) | Live 3-month forward quote, or CIP-implied `S0_in × DF_USD / DF_FC`; comment on the gap |
+| `F0_in` | 91-day forward rate | USD per EUR | 1.1653 | Scenario 10 indicative forward (set 2026-10-18 for teaching) | **Kept — the bank's quote.** Never replaced by a computed rate: compare it with `F_CIP` as a rate and in USD (`QUOTE_GAP`, `PARITY_GAP`), and ask the bank for a requote if the gap says the quote is wrong |
 | `R_USD` | USD interest rate to settlement | Annual % | 4.000% | Fed H.15, 3-month Treasury constant maturity (2026-10-29) | Live 3-month USD rate (H.15 or Term SOFR) |
 | `R_FC` | EUR interest rate to settlement | Annual % | 2.618% | 3-month Euribor fixing, EMMI (2026-10-28) | Live 3-month Euribor fixing |
 | `BASIS` | Day-count denominator | Days | 360 | ACT/360 money-market convention (USD and EUR) | Unchanged |
@@ -100,14 +100,14 @@ All inputs are workbook-scope **named ranges** on the `Inputs` tab. Market value
 
 | Tab | Purpose |
 |-----|---------|
-| `Cover` | Scenario (Scenario 10, craft-whiskey), author, version, date, and the data-source documentation for every market input |
+| `Cover` | Scenario (Scenario 10, craft-whiskey), author, version, date, a **Read first** line pointing to Checks V1 (the bank's quote vs. parity), and the data-source documentation for every market input, read by formula from `Inputs` so it is typed in one place |
 | `Legend` | The color convention below, with one sample cell of each |
-| `Inputs` | The twelve §2.1 named ranges — the only cells an analyst edits |
+| `Inputs` | The twelve §2.1 named ranges — the only cells an analyst edits — each with source, as-of timestamp, retrieval time and Stage 4 status |
 | `Forward` | Step 2: `USD_FWD` |
 | `MoneyMarket` | Step 3: borrow, convert, invest; `USD_MM`; parity check vs. forward |
-| `Options` | Step 4: premium costs in USD (`PREM_PUT_USD`, `PREM_CALL_USD`), `FV_PREM_PUT`, `FV_PREM_CALL`, the put and call payoff table across `S_T_grid`, `USD_FLOOR_PUT`, put–call parity, the V3 put kink test |
+| `Options` | Step 4: premium costs in USD (`PREM_PUT_USD`, `PREM_CALL_USD`), `FV_PREM_PUT`, `FV_PREM_CALL`, the put and call payoff table across `S_T_grid`, `USD_FLOOR_PUT`, put–call parity, the V3 put and V13 call kink tests |
 | `Sensitivity` | Strategy summary, the 11-row grid (`tbl_Sensitivity`), hedge-profit columns, winner labels, and `chart_Sensitivity` |
-| `Checks` | The §5.2 validation rules with PASS / FLAG results |
+| `Checks` | The §5.2 validation rules V1–V13 with PASS / FLAG results |
 | `Notes` | Assumptions (§3), source URLs and access timestamps, and the change log |
 
 **Color convention** (project standard): **yellow fill** = inputs · **blue font** = assumptions (`BASIS`, `STEP_FRAC`) · **green fill** = formulas · **gray fill** = named outputs.
@@ -195,6 +195,7 @@ Every output is a **gray** named cell or named table.
 | `PREM_PUT_USD`, `PREM_CALL_USD` | Option premium costs paid today | `Options` | Cost of optionality |
 | `USD_BASE_NOHEDGE`, `USD_BASE_FWD`, `USD_BASE_MM`, `USD_BASE_PUT` | Proceeds at `S_T = S0_in` | `Sensitivity` | Base case (§5.1) |
 | `PARITY_GAP`, `F_CIP`, `F_PCP` | Forward vs. parity diagnostics | `MoneyMarket`, `Options` | Tests the quoted forward |
+| `QUOTE_GAP` | The bank's quote minus the CIP forward, `F0_in − F_CIP` (USD per EUR); in USD on the receivable it is `USD_FWD − USD_MM` | `MoneyMarket` | Sizes the quote's gap as a rate and in USD (Stage 4) |
 | `tbl_Summary` | One row per strategy (no hedge, forward, money market, option (put)). Columns, each a formula on that strategy's grid column: worst case on grid (`MIN`); best case on grid (`MAX`); proceeds at `S_T = S0_in` (`USD_BASE_k`); up-front USD cost (`PREM_PUT_USD` for the put; the text "None" for the other three, whose cost is built into their locked rate); upside kept = best case − proceeds at `S0_in` | `Sensitivity` (above grid) | Executive at-a-glance |
 | `tbl_Sensitivity` | §4 Step 5 grid, 11 rows | `Sensitivity` | Core evidence |
 | `chart_Sensitivity` | §7 line chart | `Sensitivity` | Visual comparison |
@@ -202,7 +203,7 @@ Every output is a **gray** named cell or named table.
 
 ### 5.1 Computed Base-Case Values
 
-At `S_T = S0_in = 1.1172` with the §2.1 placeholders. Regression checkpoint for Stages 3 and 4.
+At `S_T = S0_in = 1.1172` with the §2.1 placeholders. Regression checkpoint for Stage 3; V12 compared against these until Stage 4.
 
 | Strategy | USD Proceeds (Receivable) | USD Outlay (Payable) | Hedge Profit vs. No Hedge |
 |----------|--------------------------:|---------------------:|--------------------------:|
@@ -213,26 +214,40 @@ At `S_T = S0_in = 1.1172` with the §2.1 placeholders. Regression checkpoint for
 
 Intermediate check values: `DF_USD` 1.010111 · `DF_FC` 1.006618 · `MM_FC_BORROW` €2,086,194.15 · `MM_USD_T0` $2,330,696.10 · `FV_PREM_PUT` −$31,182.13 · `F_CIP` 1.121077 · `F_PCP` 1.122453 · `PARITY_GAP` +3.94% ($92,867.97) · `PREM_PUT_USD` $30,870.00 · `PREM_CALL_USD` $41,790.00 · `FV_PREM_CALL` −$42,212.54 · `USD_CALL` at +5% +$75,093.46.
 
+### 5.1b Stage 4 Base-Case Values (live inputs of 2026-11-20)
+
+At `S_T = S0_in = 1.0990`, with `R_USD` 4.320%, `R_FC` 2.847%, `K_PUT` = `K_CALL` = 1.0990, and `F0_in` (1.1653) and both premiums kept. Computed independently of the workbook (market-data memo); these are V12's check figures from Stage 4 on. Re-baseline whenever the inputs change.
+
+| Strategy | USD Proceeds (Receivable) | Hedge Profit vs. No Hedge |
+|----------|--------------------------:|--------------------------:|
+| No hedge | 2,307,900.00 | — |
+| Forward | 2,447,130.00 | +139,230.00 |
+| Money market | 2,316,431.87 | +8,531.87 |
+| Option (put) | 2,276,692.90 | −31,207.10 |
+
+Intermediate check values: `DF_USD` 1.010920 · `DF_FC` 1.007197 · `MM_FC_BORROW` €2,084,995.16 · `MM_USD_T0` $2,291,409.68 · `FV_PREM_PUT` −$31,207.10 · `FV_PREM_CALL` −$42,246.35 · `F_CIP` 1.103063 · `F_PCP` 1.104257 · `QUOTE_GAP` +0.0622 (622 pips) · `PARITY_GAP` +5.64% ($130,698.13) · V3 points $2,276,692.90 · $2,276,692.90 · $2,299,771.90 · V5 bound $23,079.00 · V13 points −$42,246.35 · −$42,246.35 · −$19,167.35.
+
 ### 5.2 Validation Rules (Check Figures)
 
 These become the Stage 3 audit checklist. Results show on `Checks` as **PASS** or **FLAG**.
 
-| ID | Rule | Check figure | Expected at Stage 2 |
+| ID | Rule | Check figure | Expected (Stage 2 placeholders → Stage 4 live) |
 |----|------|--------------|---------------------|
-| V1 | Forward ≈ money-market parity: `ABS(PARITY_GAP) ≤ 0.05%` | 0.05% | **FLAG** (+3.94%) — placeholder `F0_in`; resolved at Stage 4 |
+| V1 | Forward ≈ money-market parity: `ABS(PARITY_GAP) ≤ 0.05%` | 0.05% | **FLAG** (+3.94% → +5.64%): the bank's quote sits above parity; reported, never cleared by changing an input |
 | V2 | Money market equals CIP forward: `USD_MM / FC_AMT = F_CIP` | difference < 1E-9 | PASS |
 | V3 | Put kink, tested on its own block on `Options` so it works for any strike, on or off the grid: evaluate the put at `S_T = K_PUT × (1 − STEP_FRAC)`, `K_PUT`, and `K_PUT × (1 + STEP_FRAC)`. Expected: `K_PUT × FC_AMT + FV_PREM_PUT` at the first two points, `S_T × FC_AMT + FV_PREM_PUT` at the third; largest difference ≤ $0.01 | $2,314,937.87 · $2,314,937.87 · $2,338,399.07 | PASS |
 | V4 | Put floor holds: `USD_FLOOR_PUT = K_PUT × FC_AMT + FV_PREM_PUT` within $0.01 (valid while the lowest grid `S_T` ≤ `K_PUT`). Do not compare `USD_FLOOR_PUT` with `MIN(USD_PUT)`: it is defined as that MIN, so the test could never fail | $2,314,937.87 | PASS |
 | V5 | Option proceeds vary continuously: adjacent-row change ≤ `STEP_FRAC × S0_in × FC_AMT` + $0.01. The allowance absorbs floating-point rounding: above the strike the change equals the bound exactly, and the spreadsheet computes it as $23,461.2000000002 | $23,461.20 | PASS |
 | V6 | Forward and money market constant across rows: `MAX − MIN = 0` | 0 | PASS |
-| V7 | Put–call parity vs. CIP: `ABS(F_PCP / F_CIP − 1) ≤ 0.5%` | 0.5% | PASS (+0.12%) |
-| V8 | Put–call parity vs. quoted forward: `ABS(F_PCP / F0_in − 1) ≤ 0.5%` | 0.5% | **FLAG** (−3.68%) — same placeholder |
+| V7 | Put–call parity vs. CIP: `ABS(F_PCP / F_CIP − 1) ≤ 0.5%` | 0.5% | PASS (+0.12% → +0.11%) |
+| V8 | Put–call parity vs. quoted forward: `ABS(F_PCP / F0_in − 1) ≤ 0.5%` | 0.5% | **FLAG** (−3.68% → −5.24%): the same quote |
 | V9 | No error cells: `SUMPRODUCT(--ISERROR(range)) = 0` summed over every tab, **including `Checks`**: every `Checks` row except V9's own row and the PASS/FLAG summary that depends on it (those would be circular references) | 0 | PASS |
 | V10 | Every green and gray cell outside `Checks` is a formula: count of non-formula cells, `SUMPRODUCT(--NOT(ISFORMULA(block)))` summed over the blocks, = 0. Build note: `ISFORMULA` is an Excel 2013+ function, so a generated file must store it as `_xlfn.ISFORMULA`, or Excel and LibreOffice show `#NAME?` | 0 non-formula cells | PASS |
 | V11 | Fixed terms unchanged: `FC_AMT = 2,100,000`, `T_DAYS = 91` | exact | PASS |
-| V12 | Base case reproduces §5.1 | ±$0.01 | PASS |
+| V12 | Base case reproduces the hand-check figures for the inputs in force: §5.1 on the Stage 2 placeholders, §5.1b since Stage 4. The check figures are typed on `Checks` and must be re-baselined whenever the inputs change | ±$0.01 | PASS (re-baselined at Stage 4) |
+| V13 | Call kink, tested on its own block on `Options`: evaluate the call at `S_T = K_CALL × (1 − STEP_FRAC)`, `K_CALL`, and `K_CALL × (1 + STEP_FRAC)`. Expected: `FV_PREM_CALL` at the first two points, `(S_T − K_CALL) × FC_AMT + FV_PREM_CALL` at the third; largest difference ≤ $0.01. Confirms the call's kink sits at `K_CALL`, as §4 Step 4 says | Stage 4: −$42,246.35 · −$42,246.35 · −$19,167.35 | PASS |
 
-Both FLAGs point to the same thing: the indicative `F0_in` (1.1653) sits about 442 pips above both `F_CIP` (1.1211) and `F_PCP` (1.1225), and it flatters the forward by about $92,868. They are expected, documented, and cleared at Stage 4 — not model errors.
+Both FLAGs point to the same thing: the bank's quote `F0_in` (1.1653) sits above both parity forwards. At Stage 2 the gap was about 442 pips ($92,868). With the live data of 2026-11-20 it is 622 pips above `F_CIP` (1.1031) and 610 pips above `F_PCP` (1.1043), or $130,698 on the receivable. They do not clear at Stage 4: the forward stays the bank's quote (course rule), so the FLAGs are findings about the quote, recorded in the market-data memo with a requote request. They are not model errors.
 
 ---
 
@@ -247,7 +262,7 @@ Written before the build, as a known-risks register.
 
 ### 6.2 What to Improve (improvement brief for Stage 3)
 
-- **Forward input:** replace `F0_in` at Stage 4 with a live quote or `F_CIP`, and record the before/after gap.
+- **Forward input (corrected in v1.6):** keep `F0_in` as the bank's quote; report `F_CIP`, `QUOTE_GAP` and `PARITY_GAP` against it, and ask the bank for a requote if the gap says the quote is wrong.
 - **Day count:** split `BASIS` into `BASIS_USD` and `BASIS_FC` (both 360 for USD/EUR), and consider Term SOFR instead of the bond-equivalent H.15 rate.
 - **Costs:** add a bid-ask spread sensitivity on `S0_in` and `F0_in`.
 - **Default priority for the build:** every §2 name as a workbook named range, plus `chart_Sensitivity` exactly as §7 specifies.
@@ -256,7 +271,7 @@ Written before the build, as a known-risks register.
 
 - [ ] Every input has a standardized named range from §2.1
 - [ ] Every formula in §4 uses named ranges — no bare `$F$n` references
-- [ ] Money-market hedge ties to forward hedge within 0.05% (parity check; expected FLAG until Stage 4)
+- [ ] Money-market hedge ties to forward hedge within 0.05% (parity check; FLAGs while the bank's quote is off parity)
 - [ ] Put payoff at `S_T = K_PUT` equals `K_PUT × FC_AMT + FV_PREM_PUT` (kink verification)
 - [ ] Sensitivity grid is symmetric around `S_T = S0_in` and driven by `STEP_FRAC`
 - [ ] `Notes` tab records spot / forward / rate sources with access dates
@@ -273,6 +288,8 @@ Written before the build, as a known-risks register.
 - **What the CFO should see:** how much each hedge protects if the euro falls, what each gives up if it rises, where the lines cross, and the cost of certainty versus the premium for optionality.
 
 ### 7.1 Expected Grid (placeholder inputs)
+
+The Stage 4 grid on the live inputs of 2026-11-20 is in the market-data memo.
 
 | Shock | `S_T` | No hedge | Forward | Money market | Option (put) | Profit: Fwd | Profit: MM | Profit: Put | Overall winner | Best active hedge |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|---|
@@ -298,7 +315,7 @@ Written before the build, as a known-risks register.
 - Implied-volatility option pricing (premia are scenario inputs)
 - Hedge accounting (ASC 815 / IFRS 9)
 
-**Next steps.** (a) Stage 3: hand §2–§7 to an AI as the build prompt, then audit `model.xlsx` against §5.1, §5.2, and §7.1; (b) Stage 4: replace the four market placeholders with sourced live data and clear the V1/V8 FLAGs or explain them; (c) Stage 5: validate against an independent LLM run and write the decision memo.
+**Next steps.** (a) Stage 3: hand §2–§7 to an AI as the build prompt, then audit `model.xlsx` against §5.1, §5.2, and §7.1; (b) Stage 4 (done 2026-11-20): replace the three market placeholders (`S0_in`, `R_USD`, `R_FC`) with sourced live data, re-set the strikes, keep `F0_in` as the bank's quote, and explain the V1/V8 FLAGs in the market-data memo; (c) Stage 5: validate against an independent LLM run and write the decision memo.
 
 ---
 
@@ -310,7 +327,7 @@ Written before the build, as a known-risks register.
 | Step-by-step calculation flow (§4) | Correct, auditable hedge formulas |
 | Improvement brief (§6.2) | The AI builds the improved version |
 | Output names, chart spec, validation rules (§5, §7) | The exact tables, chart, and checks the memo needs |
-| Base-case values and expected grid (§5.1, §7.1) | Regression checkpoints for Stages 3 and 4 |
+| Base-case values and expected grid (§5.1, §5.1b, §7.1) | Regression checkpoints for Stages 3 and 4 |
 
 ---
 
@@ -325,3 +342,4 @@ Written before the build, as a known-risks register.
 | 1.3 | 2026-11-13 | Alexis Fuchs (Claude-drafted, Stage 3 audit) | Audit finding 3: V3 looked the strike up on the grid and FLAGged whenever `K_PUT` sat between grid points (as it will after the Stage 4 strike reset); V4 compared `USD_FLOOR_PUT` with itself and could never fail. V3 now uses an off-grid kink test; V4 compares with the true floor |
 | 1.4 | 2026-11-13 | Alexis Fuchs (Claude-drafted, Stage 3 audit) | Audit finding 4: V5 FLAGged on floating-point noise ($23,461.2000000002 against a $23,461.20 bound). Added a $0.01 allowance |
 | 1.5 | 2026-11-13 | Alexis Fuchs (Claude-drafted, Stage 3 audit) | Audit finding 5: `tbl_Summary` columns were named but not defined, so the build improvised them ("locked/floor", "upside kept at +5%"). Defined each column as a formula; chart budget line drawn dashed |
+| 1.6 | 2026-11-20 | Alexis Fuchs (Claude-drafted, Stage 4) | Stage 4 population with the live data of 2026-11-20 (`data/2026-11-20-craft-whiskey-market-data-memo.md`). Instructor feedback (PR #2): `F0_in` stays the bank's quote, so §2.1, §5.2, §6.2 and §8 no longer plan to replace it. Fixes found while populating: V12's check figures were hard-wired to the Stage 2 placeholders (FLAG, $38,244.97 off), so §5.1b adds the Stage 4 base case and V12 compares against the inputs in force; provenance text was typed in three places and contradicted the live values, so the Cover now reads it from `Inputs`; added `QUOTE_GAP`. Instructor questions (PR #2): V13 call kink test; a Cover read-first line pointing to V1 |
