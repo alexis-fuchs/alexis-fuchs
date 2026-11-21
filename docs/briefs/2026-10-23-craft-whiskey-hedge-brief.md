@@ -12,11 +12,12 @@ llm_used: "Claude"
 
 # Protecting the Dollar Value of Our Euro Receivable
 
+**To:** CFO  
 **Created by:** Alexis Fuchs  
 **Updated by:** Alexis Fuchs  
 **Date Created:** 2026-10-30  
-**Date Updated:** 2026-10-30  
-**Version:** 1.0  
+**Date Updated:** 2026-11-20  
+**Version:** 1.1  
 **LLM Used:** Claude (drafted from the course template; reviewed and edited by the author)
 
 ---
@@ -42,7 +43,7 @@ Because we are receiving euros, a weaker euro hurts us. If the euro falls 5% bef
 | Tool | How it works | Pro | Con |
 |---|---|---|---|
 | **Forward** | Agree today to sell EUR 2.1M on the payment date at a fixed rate. At the quoted 1.1653, we receive $2,447,130. | Complete certainty; no up-front cost. | No gain if the euro rises; still bound if the customer pays late. The quote is indicative and needs confirming. |
-| **Money-market hedge** | Borrow about EUR 2.09M today, convert to dollars, and invest them; the customer's payment repays the loan. Locks in about $2,354,262. | Same certainty as a forward, built from loans and deposits we control. | Uses EUR 2.09M of borrowing capacity; more transactions to set up. |
+| **Money-market hedge** | Borrow about EUR 2.09M today at 2.618% (3-month Euribor), convert to dollars, and invest them at 4.00% (3-month Treasury) for 91 days; the customer's payment repays the loan. Locks in about $2,354,262. | Same certainty as a forward, built from loans and deposits we control. | Uses EUR 2.09M of borrowing capacity; more transactions to set up. |
 | **Put option** | Pay $30,870 today for the right, not the obligation, to sell EUR 2.1M at 1.1172. | A floor of about $2,314,938, with all the upside if the euro rises. | The premium is spent either way; if the euro holds steady, we are about $31,000 worse off than doing nothing. |
 
 In short, the first two lock the price; the put is insurance we pay for and hope not to use.
