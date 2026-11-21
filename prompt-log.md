@@ -171,6 +171,52 @@ memo and the requote request.
 - Posted the requote request on pull request #2 from my account, and merged review PRs #1 and #2
 
 ---
+## 2026-11-20 — FX hedging Stage 5: validation, decision memo and repo polish
+
+**Tool:** Claude Opus 5.5 ("extra" setting) for the independent run, in a fresh chat with
+no history; Claude (claude.ai) for drafting; a shell script Claude wrote, run in Terminal,
+for the commits
+**Files changed:** analysis/2026-11-20-craft-whiskey-validation-analysis.md,
+docs/decisions/2026-11-20-craft-whiskey-hedge-decision-memo.md, README.md,
+capabilities/fx-hedging/README.md, docs/reviews/README.md, analysis/figures/README.md,
+docs/briefs/2026-10-23-craft-whiskey-hedge-brief.md, prompt-log.md
+
+**What I asked:**
+Independent run (started 23:07 HST), with only spec.md v1.6 and the market-data memo
+uploaded, prompt verbatim:
+"I'm attaching two documents: a model specification (spec.md) and a market-data memo.
+Using only these two documents, compute all the hedge outcomes for the receivable they
+describe: no hedge, the forward hedge, the money-market hedge (all three steps), the put
+and the call, across the sensitivity grid the specification defines. Run whichever of the
+specification's validation checks you can. Then recommend one hedging strategy to the CFO
+and explain your reasoning. Show your arithmetic. Where anything in the documents is
+ambiguous, state the assumption you made and continue rather than asking me."
+Then, in this chat: walk me through Stage 5, compare the run with the workbook, verify the
+key outcomes by hand, draft the decision memo and retrospective, and polish the repo.
+
+**What I kept:**
+- The independent run matched the workbook to the cent on every strategy, grid row and
+  intermediate; its raw output is Appendix A of the validation note
+- Recommendation: sell EUR 2,100,000 forward for 2027-02-19 at a confirmed requote
+  (about $2,316,432 at market); the bank's 1.1653 is 622 pips ($130,698) above parity
+- The LLM's competing-quote step and its point about the October budget, both added to
+  the decision memo
+- Six spec-v2 changes in the retrospective, each tied to an assumption the LLM had to make
+- README project section linking every stage artifact; the Stage 1 review's optional
+  edits to the brief (To line, rates in the money-market row)
+
+**What I changed or rejected, and why:**
+- Did not coach or re-run the LLM: the run is a production test of my documents
+- Kept spec.md at v1.6: the retrospective describes v2 rather than changing the model
+  the workbook was built from
+- Left my bio untouched (AGENTS.md: the bio is mine to write)
+
+**What I verified:**
+- Gave the fresh chat exactly the two documents and sent no follow-up messages
+- Re-checked the hand-verification table on a calculator
+- Set the repo's one-line description
+
+---
 
 
 <!-- Template for new entries — copy below this line
