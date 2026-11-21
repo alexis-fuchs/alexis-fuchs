@@ -100,3 +100,13 @@ Under the stress test, V7 and V12 also FLAG when `S0_in` moves away from the pla
 ## Still to verify
 
 - [x] Open `model.xlsx` in Microsoft Excel. The build was recalculated in LibreOffice, so confirm in Excel that `Checks` shows 10 PASS / 2 FLAG with no `#NAME?`, and that changing `S0_in` moves the `Sensitivity` grid and chart.
+
+---
+
+## Which check to read first
+
+*Added 2026-11-20, answering the Stage 3 review.*
+
+Read **V1** first. It is the only check that tests a number from outside the model: the bank's forward quote, compared with what the live spot and interest rates imply. It also decides whether the forward's lead in every row of the sensitivity grid is real. On the Stage 4 data, V1 shows the quote 622 pips (+5.64%, $130,698 on the receivable) above the CIP forward. The other twelve checks test the workbook's own arithmetic. A reader can rely on them once the Checks summary reads "All results as expected? Yes".
+
+The Cover now has a **Read first** line that points to V1 and shows its result (workbook and spec v1.6). The call leg has its own kink check, V13, which answers the review's other question.
