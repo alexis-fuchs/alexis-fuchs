@@ -132,6 +132,45 @@ still held spec v1.0 and the first build.
 - All files show on github.com at the paths the Stage 3 brief gives
 
 ---
+## 2026-11-20 — FX hedging Stage 4: market data and population
+
+**Tool:** Claude (claude.ai, with web search, a Python and LibreOffice workspace, and the
+built-in browser for the FX Lab); a shell script Claude wrote, run in Terminal, for the commits
+**Files changed:** data/2026-11-20-craft-whiskey-market-data-memo.md,
+capabilities/fx-hedging/model.xlsx, capabilities/fx-hedging/spec.md,
+capabilities/fx-hedging/README.md, analysis/2026-11-13-craft-whiskey-build-audit-analysis.md,
+README.md, prompt-log.md; docs/reviews/ arrived by merging pull requests #1 and #2
+
+**What I asked:**
+Walk me through Stage 4. Claude searched for the 2026-11-20 EURUSD spot, the 3-month
+USD and EUR rates and a live 3-month forward, and computed the CIP forward and the
+quote gap independently. It then loaded the live values through the named input
+cells, recorded what broke, fixed the structure in spec v1.6, ran the course's FX
+Hedging Lab in the built-in browser with the same inputs, and drafted the market-data
+memo and the requote request.
+
+**What I kept:**
+- Live inputs: ECB spot 1.0990 (20 Nov); Treasury 3-month CMT 4.32% (20 Nov close);
+  3-month Euribor 2.847% (19 Nov fixing); strikes re-set to 1.0990
+- F0_in kept at 1.1653 (the bank's quote) and both premiums kept as an assumption
+- Four structural fixes and two additions (V13, Cover read-first line), all in spec v1.6
+- FX Lab cross-check: forward and money market match to the dollar; the Lab's put is
+  $337.10 higher because it does not carry the premium to settlement (kept the workbook's
+  convention)
+- Checks at 11 PASS / 2 FLAG; V1 and V8 reported in the memo, not forced to pass
+
+**What I changed or rejected, and why:**
+- Rejected replacing F0_in with the CIP forward: the course rule and the instructor's
+  review say the quote stays; asked for a requote instead
+- Rejected 1-year rates: the receivable is 91 days, and the brief asks for the tenor
+- Kept the Treasury rate on its published bond-equivalent basis so it can be re-pulled,
+  and sized the basis effect ($342.77) in the memo instead of converting it
+
+**What I verified:**
+- Opened model.xlsx in Excel: Checks shows 11 PASS / 2 FLAG and "All results as expected?" = Yes
+- Posted the requote request on pull request #2 from my account, and merged review PRs #1 and #2
+
+---
 
 
 <!-- Template for new entries — copy below this line
